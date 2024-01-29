@@ -1,0 +1,17 @@
+Notes
+
+Getting started with backend: first create mongoose connection by creating mongodb/database folder in lib
+& running npm install mongoose/mongodb
+then create connection,
+then create models
+
+Webhooks in this project was used to create a user as soon as the clerk user is created. It works like onClick,
+but for an event that occurs on the server. Svix in this application was used for webhook signature functionality.
+
+
+** NextResponse - read up
+
+Updates
+
+try making a change to every page
+change logo
