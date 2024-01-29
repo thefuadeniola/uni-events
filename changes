@@ -8,6 +8,8 @@ then create models
 Webhooks in this project was used to create a user as soon as the clerk user is created. It works like onClick,
 but for an event that occurs on the server. Svix in this application was used for webhook signature functionality.
 
+The whole point of using webhooks and API routes so far in this project is to sync clerk data with backend
+
 
 ** NextResponse - read up
 
