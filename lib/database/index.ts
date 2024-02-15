@@ -1,23 +1,19 @@
-// The following pattern is a technique used in node js applications especially in serverless environments like vercel.
-// This technique is used to cache a database connection across multiple invocations of serverless api routes in next js
+import mongoose from 'mongoose'
 
-import mongoose from 'mongoose';
-
-const MONGODB_URI = process.env.MONGODB_URI
-
-let cached = (global as any).mongoose || { conn: null, promise: null }
+let isConnected = false; // variable to check if mongoose is connected
 
 export const connectToDatabase = async () => {
-    if (cached.conn) return cached.conn;
+    mongoose.set('strictQuery', true);
 
-    if (!MONGODB_URI) throw new Error('MONGODB_URI is missing')
+    if (!process.env.MONGODB_URI) return console.log('MONGODB_URI NOT FOUND');
+    if (isConnected) return console.log('Already connected to MonogDB');
 
-    cached.promise = cached.promise || mongoose.connect(MONGODB_URI, {
-        dbName: 'Uni Events App',
-        bufferCommands: false
-    })
+    try {
+        await mongoose.connect(process.env.MONGODB_URI);
 
-    cached.conn = await cached.promise;
-
-    return cached.conn
+        isConnected = true;
+        console.log('Connected to MongoDB')
+    } catch (error) {
+        console.log(error)
+    }
 }

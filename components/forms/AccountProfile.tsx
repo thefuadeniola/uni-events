@@ -2,6 +2,7 @@
 
 import * as z from "zod";
 import Image from "next/image";
+import Link from "next/link"
 import { useForm } from "react-hook-form";
 import { usePathname, useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
@@ -18,6 +19,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 
 // import { useUploadThing } from "@/lib/uploadthing";
 import { isBase64Image } from "@/lib/utils";
@@ -48,37 +56,41 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
             profile_photo: user?.image ? user.image : "",
             name: user?.name ? user.name : "",
             username: user?.username ? user.username : "",
+            category: "",
+            description: ""
+
         },
     });
 
-    /*     const onSubmit = async (values: z.infer<typeof userValidation>) => {
-            const blob = values.profile_photo;
-    
-            const hasImageChanged = isBase64Image(blob);
-            if (hasImageChanged) {
-                const imgRes = await startUpload(files);
-    
-                if (imgRes && imgRes[0].fileUrl) {
-                    values.profile_photo = imgRes[0].fileUrl;
-                }
-            }
-    
-            await updateUser({
-                name: values.name,
-                path: pathname,
-                username: values.username,
-                userId: user.id,
-                bio: values.bio,
-                image: values.profile_photo,
-            });
-    
-            if (pathname === "/profile/edit") {
-                router.back();
-            } else {
-                router.push("/");
-            }
-        };
-     */
+    const onSubmit = async (values: z.infer<typeof userValidation>) => {
+        const blob = values.profile_photo;
+
+        /*             const hasImageChanged = isBase64Image(blob);
+                    if (hasImageChanged) {
+                        const imgRes = await startUpload(files);
+            
+                        if (imgRes && imgRes[0].fileUrl) {
+                            values.profile_photo = imgRes[0].fileUrl;
+                        }
+                    }
+         */
+        await createUser({
+            clerkId: user.id,
+            email: 'placeholder@gmail.com',
+            username: values.username,
+            firstName: values.name,
+            lastName: values.name,
+            image: values.profile_photo,
+            category: values.category,
+            description: values.description || '',
+        });
+
+        if (pathname === "/profile/edit") {
+            router.back();
+        } else {
+            router.push("/");
+        }
+    };
     const handleImage = (
         e: ChangeEvent<HTMLInputElement>,
         fieldChange: (value: string) => void
@@ -106,7 +118,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
         <Form {...form}>
             <form
                 className='flex flex-col justify-start gap-10'
-            /* onSubmit={form.handleSubmit(onSubmit)} */
+                onSubmit={form.handleSubmit(onSubmit)}
             >
                 <FormField
                     control={form.control}
@@ -187,26 +199,21 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
                 />
                 <FormField
                     control={form.control}
-                    name="email"
+                    name='category'
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel>Are you an organizer or attendee?</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Select a verified email to display" />
+                                        <SelectValue placeholder="Select one category" />
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    <SelectItem value="m@example.com">m@example.com</SelectItem>
-                                    <SelectItem value="m@google.com">m@google.com</SelectItem>
-                                    <SelectItem value="m@support.com">m@support.com</SelectItem>
+                                    <SelectItem value="m@example.com">Organizer</SelectItem>
+                                    <SelectItem value="m@google.com">Attendee</SelectItem>
                                 </SelectContent>
                             </Select>
-                            <FormDescription>
-                                You can manage email addresses in your{" "}
-                                <Link href="/examples/forms">email settings</Link>.
-                            </FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
@@ -214,7 +221,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
 
                 <FormField
                     control={form.control}
-                    name='bio'
+                    name='description'
                     render={({ field }) => (
                         <FormItem className='flex w-full flex-col gap-3'>
                             <FormLabel className='text-base text-light-2'>

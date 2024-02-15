@@ -1,3 +1,4 @@
+'use server'
 import React from 'react'
 import { currentUser } from '@clerk/nextjs'
 import AccountProfile from '@/components/forms/AccountProfile'
@@ -12,7 +13,7 @@ async function page() {
         id: user?.id,
         username: user?.username,
         name: user?.firstName || '',
-        image: user?.imageUrl
+        image: user?.imageUrl,
     }
     return (
         <main className='mx-auto flex max-w-3xl flex-col justify-start px-10 py-20'>
