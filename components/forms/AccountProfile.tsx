@@ -32,6 +32,7 @@ import { isBase64Image } from "@/lib/utils";
 
 import { userValidation } from "@/lib/validations/user";
 import { createUser } from "@/lib/actions/user.actions";
+import { Email } from "@clerk/nextjs/server";
 
 interface Props {
     user: {
@@ -55,6 +56,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
         defaultValues: {
             profile_photo: user?.image ? user.image : "",
             name: user?.name ? user.name : "",
+            lastName: "",
             username: user?.username ? user.username : "",
             category: "",
             description: ""
@@ -63,9 +65,10 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
     });
 
     const onSubmit = async (values: z.infer<typeof userValidation>) => {
-        const blob = values.profile_photo;
 
-        /*             const hasImageChanged = isBase64Image(blob);
+        /*            
+            const blob = values.profile_photo;
+            const hasImageChanged = isBase64Image(blob);
                     if (hasImageChanged) {
                         const imgRes = await startUpload(files);
             
@@ -73,13 +76,13 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
                             values.profile_photo = imgRes[0].fileUrl;
                         }
                     }
-         */
+        */
         await createUser({
             clerkId: user.id,
-            email: 'placeholder@gmail.com',
+            email: 'm@example.com',
             username: values.username,
             firstName: values.name,
-            lastName: values.name,
+            lastName: values.lastName,
             image: values.profile_photo,
             category: values.category,
             description: values.description || '',
@@ -177,6 +180,25 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
                         </FormItem>
                     )}
                 />
+                <FormField
+                    control={form.control}
+                    name='lastName'
+                    render={({ field }) => (
+                        <FormItem className='flex w-full flex-col gap-3'>
+                            <FormLabel className='text-base text-light-2'>
+                                Last Name
+                            </FormLabel>
+                            <FormControl>
+                                <Input
+                                    type='text'
+                                    className='account-form_input no-focus'
+                                    {...field}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
 
                 <FormField
                     control={form.control}
@@ -210,8 +232,8 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    <SelectItem value="m@example.com">Organizer</SelectItem>
-                                    <SelectItem value="m@google.com">Attendee</SelectItem>
+                                    <SelectItem value="organizer">Organizer</SelectItem>
+                                    <SelectItem value="attendee">Attendee</SelectItem>
                                 </SelectContent>
                             </Select>
                             <FormMessage />
