@@ -6,6 +6,7 @@ const CreateEvent = () => {
 
     const {sessionClaims} = auth();
 
+    // customize clerk session id
     const userId = sessionClaims?.userId as string
 
     return(
