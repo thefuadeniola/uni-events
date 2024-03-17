@@ -59,7 +59,7 @@ export async function getEventById(eventId: string) {
       const events = await populateEvent(eventsQuery)
       const eventsCount = await Event.countDocuments(conditions)
 
-      if (!event) throw new Error('Event not found')
+      if (!events) throw new Error('Event not found')
   
       return {
         data: JSON.parse(JSON.stringify(events)),
